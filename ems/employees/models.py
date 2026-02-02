@@ -36,7 +36,3 @@ class Employee(models.Model):
         if self.status == 'hired' and self.hired_on:
             return (date.today() - self.hired_on).days
         return None
-    
-
-
-        
