@@ -1,7 +1,7 @@
 from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import models
-
+from companies.models import Company, Department
 # Create your models here.
 class Employee(models.Model):
     STATUS_CHOICES = [
@@ -11,8 +11,8 @@ class Employee(models.Model):
         ('rejected', 'Not Accepted'),
     ]
 
-    company = models.ForeignKey('companies.Company', on_delete=models.PROTECT)
-    department = models.ForeignKey('companies.Department', on_delete=models.PROTECT)
+    company = models.ForeignKey(Company, on_delete=models.PROTECT)
+    department = models.ForeignKey(Department, on_delete=models.PROTECT)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     name = models.CharField(max_length=255)
     email = models.EmailField(unique=True)
@@ -37,6 +37,6 @@ class Employee(models.Model):
             return (date.today() - self.hired_on).days
         return None
     
-    
+
 
         
