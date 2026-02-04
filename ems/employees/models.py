@@ -2,6 +2,8 @@ from datetime import date
 from django.core.exceptions import ValidationError
 from django.db import models
 from companies.models import Company, Department
+from django.contrib.auth.models import User
+
 # Create your models here.
 class Employee(models.Model):
     STATUS_CHOICES = [
@@ -20,6 +22,7 @@ class Employee(models.Model):
     address = models.TextField()
     designation = models.CharField(max_length=255)
     hired_on = models.DateField(null=True, blank=True) # Can be null if not hired yet
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def clean(self):
         if self.department and self.company:
