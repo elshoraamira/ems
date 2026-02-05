@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Employees</h3>
+
+
+{% if user.is_superuser or is_manager %}
+
+    <a href="/employees/add/"
+       class="btn btn-success mb-3">
+       + Add Employee
+    </a>
+
+{% endif %}
+
+
+<table class="table table-bordered table-striped">
+
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Department</th>
+        <th>Status</th>
+        <th>Actions</th>
+    </tr>
+
+
+    {% for e in employees %}
+
+    <tr>
+
+        <td>{{ e.name }}</td>
+        <td>{{ e.email }}</td>
+        <td>{{ e.department.name }}</td>
+        <td>{{ e.status }}</td>
+
+        <td>
+
+            {% if user.is_superuser or is_manager %}
+
+                <a href="/employees/edit/{{ e.id }}/"
+                   class="btn btn-sm btn-warning">
+                   Edit
+                </a>
+
+                <a href="/employees/delete/{{ e.id }}/"
+                   class="btn btn-sm btn-danger">
+                   Delete
+                </a>
+
+            {% endif %}
+
+        </td>
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+{% endblock %}
