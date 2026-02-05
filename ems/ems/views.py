@@ -5,8 +5,8 @@ from employees.models import Employee
 from employees.forms import EmployeeForm
 from django.contrib.auth.models import User, Group
 
-from companies.models import Company
-from companies.forms import CompanyForm
+from companies.models import Company, Department
+from companies.forms import CompanyForm, DepartmentForm
 
 @login_required
 def employee_list(request):
@@ -32,6 +32,11 @@ def employee_list(request):
     if user.is_superuser:
         companies = Company.objects.all()
 
+    departments = None
+
+    if user.is_superuser or is_manager:
+        departments = Department.objects.select_related('company')
+
     return render(
         request,
         'employees/list.html',
@@ -39,6 +44,7 @@ def employee_list(request):
             'employees': employees,
             'is_manager': is_manager,
             'companies': companies,
+            'departments': departments,
         }
     )
 
@@ -242,3 +248,77 @@ def delete_company(request, pk):
             'type': 'Company'
         }
     )
+
+@login_required
+def add_department(request):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        
+    else:
+        form = DepartmentForm()
+
+    return render(
+        request,
+        'departments/form.html',
+        {
+            'form': form,
+            'title': 'Add Department'
+        }
+    )
+
+@login_required
+def edit_department(request, pk):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    department = Department.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        form = DepartmentForm(request.POST, instance=department)
+
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+
+    else:
+        form = DepartmentForm(instance=department)
+
+    return render(
+        request,
+        'departments/form.html',
+        {
+            'form': form,
+            'title': 'Edit Department'
+        }
+    )
+
+@login_required
+def delete_department(request, pk):
+
+    if not request.user.is_superuser:
+        return redirect('home')
+
+    department = Department.objects.get(pk=pk)
+
+    if request.method == 'POST':
+        department.delete()
+        return redirect('home')
+
+    return render(
+        request,
+        'departments/confirm_delete.html',
+        {
+            'object': department,
+            'type': 'Department'
+        }
+    )
+

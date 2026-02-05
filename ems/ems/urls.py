@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import employee_list, add_employee, edit_employee, delete_employee, company_list, add_company, edit_company, delete_company
+from .views import employee_list, add_employee, edit_employee, delete_employee, company_list, add_company, edit_company, delete_company, add_department, edit_department, delete_department
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -31,4 +31,7 @@ urlpatterns = [
     path('companies/add/', add_company, name='add_company'),
     path('companies/<int:pk>/edit/', edit_company, name='edit_company'),
     path('companies/<int:pk>/delete/', delete_company, name='delete_company'),
+    path('departments/add/', add_department, name='add_department'),
+    path('departments/<int:pk>/edit/', edit_department, name='edit_department'),
+    path('departments/<int:pk>/delete/', delete_department, name='delete_department'),
 ]
