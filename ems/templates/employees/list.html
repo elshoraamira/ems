@@ -7,7 +7,7 @@
 
 {% if user.is_superuser or is_manager %}
 
-    <a href="/employees/add/"
+    <a href="{% url 'add_employee' %}"
        class="btn btn-success mb-3">
        + Add Employee
     </a>
