@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Delete Company</h3>
+
+<p>
+Delete <b>{{ object }}</b>?
+</p>
+
+
+<form method="post">
+
+    {% csrf_token %}
+
+    <button class="btn btn-danger">
+        Delete
+    </button>
+
+    <a href="{% url 'home' %}"
+       class="btn btn-secondary">
+       Cancel
+    </a>
+
+</form>
+
+{% endblock %}
