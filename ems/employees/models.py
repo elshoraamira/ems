@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from companies.models import Company, Department
 from django.contrib.auth.models import User
-
+import re
 # Create your models here.
 class Employee(models.Model):
     STATUS_CHOICES = [
@@ -34,6 +34,17 @@ class Employee(models.Model):
         if self.status == 'hired' and not self.hired_on:
             raise ValidationError(
                 "Hired date must be provided when employee status is 'Hired'."
+            )
+        
+        # Non-hired must NOT have date
+        if self.status != 'hired' and self.hired_on:
+            raise ValidationError(
+                "Hired date can only be set when status is 'Hired'."
+            )
+    
+        if not re.fullmatch(r'\d{10,15}', self.mobile):
+            raise ValidationError(
+                "Mobile number must contain 10–15 digits only."
             )
     
     @property
