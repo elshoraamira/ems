@@ -25,27 +25,22 @@ class Employee(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     def clean(self):
-        if self.department and self.company:
-            if self.department.company_id != self.company_id:
-                raise ValidationError(
-                    "Selected department does not belong to the selected company."
-                )
-        
+        errors = {}
+        if self.department.company_id != self.company_id:
+            errors['department'] = "Department must belong to selected company."
+
         if self.status == 'hired' and not self.hired_on:
-            raise ValidationError(
-                "Hired date must be provided when employee status is 'Hired'."
-            )
-        
-        # Non-hired must NOT have date
+            errors['hired_on'] = "Hired date is required when status is Hired."
+
         if self.status != 'hired' and self.hired_on:
-            raise ValidationError(
-                "Hired date can only be set when status is 'Hired'."
-            )
-    
+            errors['hired_on'] = "Hired date can only be set if status is Hired."
+
         if not re.fullmatch(r'\d{10,15}', self.mobile):
-            raise ValidationError(
-                "Mobile number must contain 10–15 digits only."
-            )
+            errors['mobile'] = "Mobile must contain 10–15 digits only."
+
+        if errors:
+            raise ValidationError(errors)
+
     
     @property
     def days_employed(self):
