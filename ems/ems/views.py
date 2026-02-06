@@ -34,9 +34,14 @@ def employee_list(request):
 
     departments = None
 
-    if user.is_superuser or is_manager:
+    if user.is_superuser:
         departments = Department.objects.select_related('company')
 
+    elif is_manager:
+        departments = Department.objects.filter(
+            company=user.employee.company
+        ).select_related('company')
+        
     return render(
         request,
         'employees/list.html',

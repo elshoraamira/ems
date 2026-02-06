@@ -2,7 +2,7 @@
 
 {% block content %}
 
-
+{% if user.is_superuser %}
 <h3>Companies</h3>
 
 <a href="{% url 'add_company' %}"
@@ -47,8 +47,8 @@
     {% endfor %}
 
 </table>
-
-
+{% endif %}
+{% if user.is_superuser or is_manager %}
 
 <h3>Departments</h3>
 
@@ -64,9 +64,10 @@
     <th>Name</th>
     <th>Company</th>
     <th>Employees</th>
+    {% if user.is_superuser %}
     <th>Actions</th>
+    {% endif %}
 </tr>
-
 
 {% for d in departments %}
 
@@ -75,6 +76,7 @@
     <td>{{ d.name }}</td>
     <td>{{ d.company.name }}</td>
     <td>{{ d.employees_count }}</td>
+    {% if user.is_superuser %}
 
     <td>
 
@@ -89,13 +91,13 @@
         </a>
 
     </td>
-
+    {% endif %}
 </tr>
 
 {% endfor %}
 
 </table>
-
+{% endif %}
 
 <h3>Employees</h3>
 
@@ -115,12 +117,15 @@
     <tr>
         <th>Name</th>
         <th>Email</th>
+        <th>Company</th>
         <th>Department</th>
         <th>Status</th>
         <th>Designation</th>
         <th>Role</th>
         <th>Days Employed</th>
+        {% if user.is_superuser or is_manager %}
         <th>Actions</th>
+        {% endif %}
     </tr>
 
 
@@ -130,6 +135,7 @@
 
         <td>{{ e.name }}</td>
         <td>{{ e.email }}</td>
+        <td>{{ e.company.name }}</td>
         <td>{{ e.department.name }}</td>
         <td>{{ e.status }}</td>
         <td>{{ e.designation }}</td>
@@ -147,11 +153,8 @@
                 Not hired
             {% endif %}
         </td>
-
+        {% if user.is_superuser or is_manager %}
         <td>
-
-            {% if user.is_superuser or is_manager %}
-
                 <a href="{% url 'edit_employee' e.id %}"
                     class="btn btn-sm btn-warning">
                     Edit
@@ -161,10 +164,8 @@
                     class="btn btn-sm btn-danger">
                     Delete
                 </a>
-
-            {% endif %}
-
         </td>
+        {% endif %}
 
     </tr>
 
