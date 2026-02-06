@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from employees.models import Employee
 from companies.models import Company, Department
 from .serializers import EmployeeSerializer, CompanySerializer, DepartmentSerializer
@@ -59,3 +60,15 @@ class EmployeeViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+@api_view(['GET'])
+def departments_by_company(request, company_id):
+
+    departments = Department.objects.filter(company_id=company_id)
+
+    data = [
+        {"id": d.id, "name": d.name}
+        for d in departments
+    ]
+
+    return Response(data)

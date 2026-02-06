@@ -48,5 +48,8 @@ class Employee(models.Model):
             return (date.today() - self.hired_on).days
         return None
     
+    def is_manager(self):
+        return self.user.groups.filter(name='Manager').exists()
+
     def __str__(self):
         return f"{self.name} ({self.company.name})"

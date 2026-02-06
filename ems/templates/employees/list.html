@@ -25,7 +25,7 @@
     <tr>
 
         <td>{{ c.name }}</td>
-        <td>{{ c.department_count }}</td>
+        <td>{{ c.departments_count }}</td>
         <td>{{ c.employees_count }}</td>
 
         <td>
@@ -117,6 +117,9 @@
         <th>Email</th>
         <th>Department</th>
         <th>Status</th>
+        <th>Designation</th>
+        <th>Role</th>
+        <th>Days Employed</th>
         <th>Actions</th>
     </tr>
 
@@ -129,6 +132,21 @@
         <td>{{ e.email }}</td>
         <td>{{ e.department.name }}</td>
         <td>{{ e.status }}</td>
+        <td>{{ e.designation }}</td>
+        <td>
+            {% if e.is_manager %}
+                Manager
+            {% else %}
+                Employee
+            {% endif %}
+        </td>
+        <td>
+            {% if e.days_employed %}
+                {{ e.days_employed }} days
+            {% else %}
+                Not hired
+            {% endif %}
+        </td>
 
         <td>
 

@@ -62,6 +62,7 @@ def add_employee(request):
 
         if form.is_valid():
             employee = form.save(commit=False)
+            is_manager = form.cleaned_data.get('is_manager')
 
             # Create username from email
             username = employee.email.split('@')[0]
@@ -81,9 +82,14 @@ def add_employee(request):
                 password='TempPass123'
             )
 
-            # Assign Employee group
+            # Assign group
             employee_group = Group.objects.get(name='Employee')
+            manager_group = Group.objects.get(name='Manager')
+
             user.groups.add(employee_group)
+
+            if is_manager:
+                user.groups.add(manager_group)
 
             # Link employee to user
             employee.user = user
@@ -120,10 +126,26 @@ def edit_employee(request, pk):
         form = EmployeeForm(request.POST, instance=employee)
 
         if form.is_valid():
-            form.save()
+            employee = form.save()
+
+            is_manager = form.cleaned_data.get('is_manager')
+
+            manager_group = Group.objects.get(name='Manager')
+
+            if is_manager:
+                employee.user.groups.add(manager_group)
+            else:
+                employee.user.groups.remove(manager_group)
+
             return redirect('home')
+
     else:
-        form = EmployeeForm(instance=employee)
+        user_is_manager = employee.user.groups.filter(name='Manager').exists()
+
+        form = EmployeeForm(
+            instance=employee,
+            initial={'is_manager': user_is_manager}
+        )
 
     return render(
         request,
